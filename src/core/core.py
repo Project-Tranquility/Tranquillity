@@ -2,6 +2,7 @@ import os
 import threading as Thread
 import time
 from core.voice_llm import llm
+from core.llm_with_contexte import llm as llm_with_context
 from core.waiting_message import waiting_message
 import core.state as state
 
@@ -23,7 +24,7 @@ def core():
     t_minuteur = Thread.Thread(target=minuteur, daemon=True)
     t_minuteur.start()
 
-    t_talk = Thread.Thread(target=llm, daemon=True)
+    t_talk = Thread.Thread(target=llm_with_context, daemon=True)
     t_talk.start()
     while state.is_alive:
         if state.is_alive == 0:
