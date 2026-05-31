@@ -76,7 +76,6 @@ def waiting_message():
 
     audio_q.put(None)
     t.join()
-    print("\n")
     history.append({"role": "assistant", "content": reponse.strip()})
     reponse = ""
 
