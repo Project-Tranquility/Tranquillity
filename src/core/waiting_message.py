@@ -2,16 +2,13 @@ import requests
 from ollama import chat
 import wave
 from piper import PiperVoice
+import core.state as state
 import subprocess
 import threading
 import queue
 import tempfile
 import os
 import json
-
-MODEL = "test:latest"
-VOICE_PATH = "model/tts/glados/fr_FR-glados-medium.onnx"
-PERSONALITY_PATH = "src/personality/personality.json"
 
 def should_flush(buf: str) -> bool:
     buf = buf.strip()
@@ -35,20 +32,20 @@ def player_worker(q: "queue.Queue[str | None]"):
             pass
 
 def waiting_message():
-    with open(PERSONALITY_PATH, "r", encoding="utf-8") as f:
+    with open(state.personnality_path, "r", encoding="utf-8") as f:
         personnality = json.load(f)
     history = [personnality]
     message = "l'utilisateur est inactif, dit une phrase pas trop longue concernant sont inactivité alors que tu es allumé."
     history.append({"role": "user", "content": message.strip()})
 
-    voice = PiperVoice.load(VOICE_PATH)
+    voice = PiperVoice.load(state.voice_path)
     audio_q: "queue.Queue[str | None]" = queue.Queue()
     t = threading.Thread(target=player_worker, args=(audio_q,), daemon=True)
     t.start()
     buf = ""
     reponse = ""
     stream = chat(
-        model=MODEL,
+        model=state.model,
         messages=history,
         stream=True,
     )

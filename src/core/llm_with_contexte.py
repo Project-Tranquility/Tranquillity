@@ -11,10 +11,6 @@ import tempfile
 import os
 import json
 
-MODEL = "test:latest"
-VOICE_PATH = "model/tts/glados/fr_FR-glados-medium.onnx"
-PERSONALITY_PATH = "src/personality/personality.json"
-
 def should_flush(buf: str) -> bool:
     buf = buf.strip()
     if not buf:
@@ -37,7 +33,7 @@ def player_worker(q: "queue.Queue[str | None]"):
             pass
 
 def llm():
-    print(f"start convesation with {MODEL}")
+    print(f"start convesation with {state.model}")
     #with open(PERSONALITY_PATH, "r", encoding="utf-8") as f:
     #    personnality = json.load(f)
     history = []
@@ -51,7 +47,7 @@ def llm():
             return
         history.append({"role": "user", "content": message.strip()})
         state.time_statue = False
-        voice = PiperVoice.load(VOICE_PATH)
+        voice = PiperVoice.load(state.voice_path)
         audio_q: "queue.Queue[str | None]" = queue.Queue()
         t = threading.Thread(target=player_worker, args=(audio_q,), daemon=True)
         t.start()
@@ -59,7 +55,7 @@ def llm():
         reponse = ""
 
         stream = chat(
-            model=MODEL,
+            model=state.model,
             messages=history,
             stream=True,
         )

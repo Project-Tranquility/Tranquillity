@@ -1,13 +1,12 @@
 import os
 import re
-
-FIFO_PATH = "/tmp/kitty_shell_input"
+import core.state as state
 
 def send_command(cmd: str):
-    if not os.path.exists(FIFO_PATH):
-        print(f"Sub-Agent: FIFO introuvable: {FIFO_PATH}")
+    if not os.path.exists(state.fifo_path):
+        print(f"Sub-Agent: FIFO introuvable: {state.fifo_path}")
         return
-    with open(FIFO_PATH, "w") as fifo:
+    with open(state.fifo_path, "w") as fifo:
         fifo.write(cmd + "\n")
 
 def subagent_cmd(cmd: str):

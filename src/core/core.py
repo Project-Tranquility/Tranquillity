@@ -8,7 +8,6 @@ from core.llm_with_contexte import llm as llm_with_context
 from core.waiting_message import waiting_message
 import core.state as state
 
-FIFO_PATH = "/tmp/kitty_shell_input"
 
 def minuteur():
     time_nb = 0
@@ -23,16 +22,16 @@ def minuteur():
             time_nb = 0
 
 def open_kitty_shell():
-    if os.path.exists(FIFO_PATH):
-        if not stat.S_ISFIFO(os.stat(FIFO_PATH).st_mode):
-            os.remove(FIFO_PATH)
-            os.mkfifo(FIFO_PATH)
+    if os.path.exists(state.fifo_path):
+        if not stat.S_ISFIFO(os.stat(state.fifo_path).st_mode):
+            os.remove(state.fifo_path)
+            os.mkfifo(state.fifo_path)
     else:
-        os.mkfifo(FIFO_PATH)
-    subprocess.Popen(["kitty", "-e", "bash", "-c", f"tail -f {FIFO_PATH} | bash"])
+        os.mkfifo(state.fifo_path)
+    subprocess.Popen(["kitty", "-e", "bash", "-c", f"tail -f {state.fifo_path} | bash"])
 
 def send_command(cmd: str):
-    with open(FIFO_PATH, "w") as fifo:
+    with open(state.fifo_path, "w") as fifo:
         fifo.write(cmd + "\n")
 
 def init_shell():
@@ -50,7 +49,7 @@ def core():
     init_shell()
     while state.is_alive:
         if state.is_alive == 0:
-            os.remove(FIFO_PATH)
+            os.remove(state.fifo_path)
             break
 
             
