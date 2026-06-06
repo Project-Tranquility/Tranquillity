@@ -8,3 +8,9 @@ time_max = 120
 inactif = False
 prioritty = 0
 is_alive = 1
+
+# Primary settings
+model = "test:latest"
+voice_path = "model/tts/glados/fr_FR-glados-medium.onnx"
+personnality_path = "src/personality/personality.json"
+fifo_path = "/tmp/kitty_shell_input"
