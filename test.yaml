@@ -1,0 +1,5 @@
+- trigger: ["salut", "bonjour"]
+  respons:
+  - "Bonjour, humain"
+  - "Comme on se retrouve humain"
+  - "Tu est toujours en vie ? Ta survie est un mystere"
