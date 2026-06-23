@@ -3,3 +3,17 @@
   - "Bonjour, humain"
   - "Comme on se retrouve humain"
   - "Tu est toujours en vie ? Ta survie est un mystere"
+- trigger: ["nul", "inutile"]
+  respons:
+  - "Comme vous, humain"
+  - "Tu es toi meme pathetitique"
+- trigger: ["Allume la lumière"]
+  respons:
+  - "Comme vous voulez"
+  commands:
+  - "./ecc-api --toggle"
+- trigger: ["Eteind la lumière"]
+  respons: 
+  - "Très bien"
+  commands:
+  - "./ecc-api --toogle" 
