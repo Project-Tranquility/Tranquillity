@@ -7,7 +7,7 @@ import yaml
 from rapidfuzz import fuzz
 import random
 
-SetLogLevel(-1)  # Supprime les logs verbeux de Vosk
+SetLogLevel(-1)
 
 MODEL_PATH = "model/vosk/vosk-model-small-fr/vosk-model-small-fr-0.22"  # adapte le chemin
 SAMPLE_RATE = 16000
