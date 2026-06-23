@@ -4,6 +4,7 @@ import sys
 import sounddevice as sd
 from vosk import Model, KaldiRecognizer, SetLogLevel
 import yaml
+from rapidfuzz import fuzz
 
 SetLogLevel(-1)  # Supprime les logs verbeux de Vosk
 
@@ -44,6 +45,9 @@ def main():
                 if text:
                     print(f"[final] {text}")
                     print("\n")
+                    for entry in dico:
+                        for trigger in entry["trigger"]:
+                            print(fuzz.partial_ratio(text, trigger))
             else:
                 partial = json.loads(rec.PartialResult())
                 p = partial.get("partial", "").strip()
