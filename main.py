@@ -9,7 +9,7 @@ import random
 
 SetLogLevel(-1)
 
-MODEL_PATH = "model/vosk/vosk-model-small-fr/vosk-model-small-fr-0.22"  # adapte le chemin
+MODEL_PATH = "model/vosk/vosk-model-small-fr/vosk-model-small-fr-0.22"
 SAMPLE_RATE = 16000
 BLOCK_SIZE = 4000
 
