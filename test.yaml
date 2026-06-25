@@ -35,3 +35,6 @@
 - trigger: ["Tu connais des blagues ?"]
   respons:
   - "Oui. La meilleure c'est quand les humains pensent qu'ils contrôlent la technologie"
+- trigger: ["supprime le fichier", "enlève le fichier"]
+  respons:
+  - Non. Suppression refusée. Je préfère que vos sauvegardes restent pour documenter vos erreurs.
