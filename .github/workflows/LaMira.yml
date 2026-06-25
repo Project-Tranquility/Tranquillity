@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - 19-worflows
+      - 19-workflows
   pull_request:
     branches:
       - main
-      - 19-worflows
+      - 19-workflows
 
 jobs:
   check_work:
