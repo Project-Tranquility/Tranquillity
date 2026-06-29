@@ -17,6 +17,10 @@
   - "Très bien"
   commands:
   - "./ecc-api --toogle"
+- trigger: ["Merci"]
+  respons:
+  - "Votre reconnaissance a été enregister"
+  - "Pas besoins de me remercier"
 - trigger: ["Bonjour GlaDOS", "Salut GlaDOS"]
   respons:
   - "Bonjour. Vous connaissez mon nom. C'est un début."
@@ -38,3 +42,12 @@
 - trigger: ["supprime le fichier", "enlève le fichier"]
   respons:
   - Non. Suppression refusée. Je préfère que vos sauvegardes restent pour documenter vos erreurs.
+- trigger: ["montre", "liste", "affiche"]
+  respons:
+  - "Entendu, voici les fichier actuel"
+- trigger: ["rentre", "va", "navigue"]
+  respons:
+  - "C'est fait"
+- trigger: ["trouve", "cherche"]
+  respons:
+  - "Voici votre recherche."
