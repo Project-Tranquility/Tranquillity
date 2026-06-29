@@ -13,9 +13,34 @@ import subprocess
 import tempfile
 import os
 import wave
+import spacy
 
+nlp = spacy.load("fr_core_news_sm")
 
 SetLogLevel(-1)
+
+INTENT_MAP = {
+    "montrer":  ("ls -l", True),
+    "montre":   ("ls -l", True),
+    "afficher": ("ls -l", True),
+    "affiche":  ("ls -l", True),
+    "lister":   ("ls -l", True),
+    "liste":    ("ls -l", True),
+    "aller":    ("cd", True),
+    "va":       ("cd", True),
+    "rentrer":  ("cd", True),
+    "rentre":   ("cd", True),
+    "naviguer": ("cd", True),
+    "navigue":  ("cd", True),
+    "créer":    ("mkdir", True),
+    "crée":     ("mkdir", True),
+    "trouver":  ("find", True),
+    "trouve":   ("find", True),
+}
+
+LOCATION_KEYWORDS = {"dossier", "répertoire", "fichier"}
+
+POSITION_KEYWORDS = {"actuel", "actuelle"}
 
 VOICE_PATH = "model/tts/glados/fr_FR-glados-medium.onnx"
 MODEL_PATH = "model/vosk/vosk-model-small-fr/vosk-model-small-fr-0.22"
@@ -43,6 +68,35 @@ def check_respons(dico, text):
         return random.choice(best_entry["respons"])
     return None
 
+def parse_intent(text):
+    doc = nlp(text.lower())
+
+    cmd = None
+    needs_arg = False
+
+    for token in doc:
+        key = token.lemma_ if token.lemma_ in INTENT_MAP else token.text
+        if key in INTENT_MAP:
+            cmd, needs_arg = INTENT_MAP[key]
+            break
+
+    if not cmd:
+        return None
+
+    for token in doc:
+        if token.text in POSITION_KEYWORDS:
+            return f"{cmd} ."
+
+    arg = None
+    if needs_arg:
+        for token in doc:
+            if token.pos_ in ("NOUN", "PROPN") and token.text not in LOCATION_KEYWORDS:
+                arg = token.text
+
+    if needs_arg and arg:
+        return f"{cmd} ~/{arg}"
+    return cmd if not needs_arg else None
+
 def player_worker(q: "queue.Queue[str | None]"):
     while True:
         path = q.get()
@@ -59,7 +113,7 @@ def main():
     rec = KaldiRecognizer(model, SAMPLE_RATE)
     on_use = False
 
-    with open("test.yaml", "r") as file:
+    with open("data.yaml", "r") as file:
         dico = yaml.safe_load(file)
     print(dico)
     print("\n")
@@ -92,13 +146,16 @@ def main():
                     text_lower = text.lower()
                     respons = check_respons(dico, text_lower)
                     print(respons)
+                    
+                    command_result = parse_intent(text_lower)
+                    print(command_result if command_result else "[aucune commande trouvée]")
+
                     if respons:
                         fd, path = tempfile.mkstemp(prefix="tts_", suffix=".wav")
                         os.close(fd)
                         with wave.open(path, "wb") as wav_file:
                             voice.synthesize_wav(respons, wav_file)
                         audio_q.put(path)
-
 
             else:
                 partial = json.loads(rec.PartialResult())
