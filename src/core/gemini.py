@@ -15,6 +15,7 @@ from vosk import Model, KaldiRecognizer, SetLogLevel
 import json
 import requests
 from src.subsystem.search_web import search_web
+from src.subsystem.get_email import get_email
 
 from google import genai
 from google.genai import types
@@ -30,6 +31,13 @@ def callback(indata, frames, time, status):
         print(status, file=sys.stderr)
     if recording_enabled:
         audio_queue.put(bytes(indata))
+
+
+def clean_for_tts(text: str) -> str:
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)   # **gras** -> gras
+    text = re.sub(r'\*(.+?)\*', r'\1', text)        # *italique* -> italique
+    text = re.sub(r'[*#`_]', '', text)              # supprime les symboles isolés restants
+    return text
 
 def player_worker(q: "queue.Queue[str | None]"):
     global recording_enabled
@@ -121,7 +129,7 @@ def gemini():
             model=model_name,
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
-                tools=[search_web]
+                tools=[search_web, get_email]
             ),
             history=[]
         )
@@ -206,8 +214,9 @@ def gemini():
                     else:
                         spoken_text = streamed_text
 
-                    if spoken_text.strip():
-                        tts_text_q.put(spoken_text)
+                    clean_tts = clean_for_tts(spoken_text)
+                    if clean_tts.strip():
+                        tts_text_q.put(clean_tts)
 
                     print("\n")
 
