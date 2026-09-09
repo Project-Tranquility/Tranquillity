@@ -16,9 +16,10 @@ import json
 import requests
 from src.subsystem.search_web import search_web
 from src.subsystem.get_email import get_email
-
 from google import genai
 from google.genai import types
+from src.subsystem.create_event import create_event
+from src.subsystem.list_event import list_calendar
 
 load_dotenv()
 
@@ -34,9 +35,9 @@ def callback(indata, frames, time, status):
 
 
 def clean_for_tts(text: str) -> str:
-    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)   # **gras** -> gras
-    text = re.sub(r'\*(.+?)\*', r'\1', text)        # *italique* -> italique
-    text = re.sub(r'[*#`_]', '', text)              # supprime les symboles isolés restants
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+    text = re.sub(r'\*(.+?)\*', r'\1', text)
+    text = re.sub(r'[*#`_]', '', text)
     return text
 
 def player_worker(q: "queue.Queue[str | None]"):
@@ -129,7 +130,7 @@ def gemini():
             model=model_name,
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
-                tools=[search_web, get_email]
+                tools=[search_web, get_email, list_calendar, create_event]
             ),
             history=[]
         )
