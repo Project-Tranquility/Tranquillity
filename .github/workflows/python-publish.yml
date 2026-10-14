@@ -71,3 +71,15 @@ jobs:
         with:
           packages-dir: dist/
           skip-existing: true
+  dm_me:
+    needs:
+      - pypi-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: DM me
+        run: |
+          curl -sS -X POST "https://discord.com/api/v10/channels/${{ secrets.DEV_ID }}/messages" \
+          -H "Authorization: Bot ${{ secrets.BOT_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"content":"Deployment Pypi Réussi"}' \
+
