@@ -9,6 +9,7 @@ import threading
 import shlex
 from piper import PiperVoice
 from settings.settings import IA_NAME, VOICE_PATH, MODEL_PATH, SAMPLE_RATE, BLOCK_SIZE
+from settings.settings import *
 from dotenv import load_dotenv
 import re
 from vosk import Model, KaldiRecognizer, SetLogLevel
@@ -61,6 +62,9 @@ def clear_screen():
 def get_api_key():
     api_key = os.getenv("GEMINI_API_KEY")
     if api_key:
+        return api_key
+    if GEMINI_API_KEY is not None:
+        api_key = GEMINI_API_KEY
         return api_key
     
     print("=== Configuration de la clé API Gemini ===")
