@@ -36,7 +36,7 @@ Planned Features:
 
 ***
 
-Development / Usage:
+### For dev :
 
 For Linux or Windows:
 
@@ -44,28 +44,43 @@ For Linux or Windows:
 ./env/bin/python -m pip install -r requirement.txt
 ```
 
-For NixOS:
-
-Requires devenv
+For NixOS, devenv is already setup you need just
 
 ```bash
 devenv init
 ```
-
 then
 
 ```bash
 devenv start
 ```
 
-Usage:
+For other you need to create env.
+
+### For use
+
+For installation you have 2 possibility : Docker Pypi or Github installation
+Warning : Github installation use YOUR environement. IA have instruction for do not use rm command but its IA and i posibly use this or other dangerous command
+Docker have "secure" environement with no rm command
+
+For Github installation, clone or install zip file and launch with this
 
 ```bash
 python ctOS.py --init
 python ctOS.py --start
 ```
 
-Docker:
+
+For Docker Pypi you have this docker : https://hub.docker.com/r/tadomika/tranquillity
+
+```bash
+pip install tranquillity
+docker pull -f tranquillity:latest
+TRANQUILLITY_IMAGE=tranquillity:latest
+tranquillity --version
+```
+
+or 
 
 ```bash
 docker build -f docker/Dockerfile -t tranquillity:local .
