@@ -1,8 +1,19 @@
 import os
 import requests
+from settings.settings import NEWAPI_KEY
+
+
+def get_api_key():
+    api_key = os.getenv("NEWSAPI_KEY")
+    if api_key:
+            return api_key
+    if NEWAPI_KEY is not None:
+        api_key = NEWAPI_KEY
+        return api_key
+    return None
 
 def search_web(query: str) -> str:
-    api_key = os.getenv("NEWSAPI_KEY")
+    api_key = get_api_key()
     if not api_key:
         return "Erreur : clé NEWSAPI_KEY manquante dans les variables d'environnement."
 
